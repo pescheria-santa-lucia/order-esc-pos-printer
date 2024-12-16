@@ -33,6 +33,8 @@ app.post('/ticket/print', async (req, res) => {
 
     await networkDevice.open(async (err) => {
         if (!!err) {
+            console.error(err);
+
             await closeConnection(printer, networkDevice);
 
             return res.status(500)
@@ -59,23 +61,23 @@ app.post('/ticket/print', async (req, res) => {
                         .send({ ...response, error: errors[0] });
                 }
 
-                await printer
-                    .flush()
-                    .font('a')
-                    .align('ct')
-                    .size(2, 2)
-                    .text(`Reparto`)
-                    .text(printTicketDTO.departmentName)
-                    .size(1, 1)
-                    .text("Il tuo numero e'")
-                    .size(7, 7)
-                    .text(printTicketDTO.currentLastNumber)
-                    .size(1, 1)
-                    .text(`Davanti a te ${!printTicketDTO.queueLength ? "non ci sono persone" :
-                        printTicketDTO.queueLength === 1 ? "c'e' una persona" : `ci sono ${printTicketDTO.queueLength} persone`}`)
-                    .feed()
-                    .feed()
-                    .cut(true, 3);
+                // await printer
+                //     .flush()
+                //     .font('a')
+                //     .align('ct')
+                //     .size(2, 2)
+                //     .text(`Reparto`)
+                //     .text(printTicketDTO.departmentName)
+                //     .size(1, 1)
+                //     .text("Il tuo numero e'")
+                //     .size(7, 7)
+                //     .text(printTicketDTO.currentLastNumber)
+                //     .size(1, 1)
+                //     .text(`Davanti a te ${!printTicketDTO.queueLength ? "non ci sono persone" :
+                //         printTicketDTO.queueLength === 1 ? "c'e' una persona" : `ci sono ${printTicketDTO.queueLength} persone`}`)
+                //     .feed()
+                //     .feed()
+                //     .cut(true, 3);
 
                 await closeConnection(printer, networkDevice);
 
