@@ -86,9 +86,11 @@ app.post('/ticket/print', async (req, res) => {
                     .feed()
                     .cut(true, 3);
 
-                await closeConnection(printer, networkDevice);
+                console.log("Printed content");
 
                 clearTimeout(timer);
+
+                await closeConnection(printer, networkDevice);
 
                 return res.status(200)
                     .send(response);
@@ -111,6 +113,8 @@ app.post('/ticket/print', async (req, res) => {
 });
 
 async function closeConnection(printer, networkDevice) {
+    console.log(`Closed connection to the printer with ip: ${networkDevice.address}`)
+
     await printer.close();
     networkDevice.close();
 }
