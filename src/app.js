@@ -31,7 +31,7 @@ app.post('/ticket/print', async (req, res) => {
         ledId: printTicketDTO.ledId,
     }
 
-    await networkDevice.open(async (err) => {
+    networkDevice.open(async (err) => {
         if (!!err) {
             console.error(err);
 
@@ -47,10 +47,17 @@ app.post('/ticket/print', async (req, res) => {
                 });
         }
 
+        console.log(`Connected to the printer with ip: ${printTicketDTO.printerIpAddress}`)
+
         let errors = [];
 
         try {
-            printer.getStatuses(async statuses => {
+            setTimeout(() => {
+                return res.status(500)
+                        .send({ ...response, error: "La stampante è connessa ma è impossibile accedere allo stato della stampante" });
+            }, 10000)
+
+            printer.getStatuses(async (statuses) => {
                 errors.push(...statuses.map((status) => status.toJSON().statuses.filter(s => s.status === "error").map(e => errorMapper(e))).flat())
 
                 if (errors.length > 0) {
@@ -61,23 +68,23 @@ app.post('/ticket/print', async (req, res) => {
                         .send({ ...response, error: errors[0] });
                 }
 
-                // await printer
-                //     .flush()
-                //     .font('a')
-                //     .align('ct')
-                //     .size(2, 2)
-                //     .text(`Reparto`)
-                //     .text(printTicketDTO.departmentName)
-                //     .size(1, 1)
-                //     .text("Il tuo numero e'")
-                //     .size(7, 7)
-                //     .text(printTicketDTO.currentLastNumber)
-                //     .size(1, 1)
-                //     .text(`Davanti a te ${!printTicketDTO.queueLength ? "non ci sono persone" :
-                //         printTicketDTO.queueLength === 1 ? "c'e' una persona" : `ci sono ${printTicketDTO.queueLength} persone`}`)
-                //     .feed()
-                //     .feed()
-                //     .cut(true, 3);
+                await printer
+                    .flush()
+                    .font('a')
+                    .align('ct')
+                    .size(2, 2)
+                    .text(`Reparto`)
+                    .text(printTicketDTO.departmentName)
+                    .size(1, 1)
+                    .text("Il tuo numero e'")
+                    .size(7, 7)
+                    .text(printTicketDTO.currentLastNumber)
+                    .size(1, 1)
+                    .text(`Davanti a te ${!printTicketDTO.queueLength ? "non ci sono persone" :
+                        printTicketDTO.queueLength === 1 ? "c'e' una persona" : `ci sono ${printTicketDTO.queueLength} persone`}`)
+                    .feed()
+                    .feed()
+                    .cut(true, 3);
 
                 await closeConnection(printer, networkDevice);
 
