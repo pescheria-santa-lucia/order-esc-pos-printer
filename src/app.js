@@ -52,10 +52,10 @@ app.post('/ticket/print', async (req, res) => {
         let errors = [];
 
         try {
-            setTimeout(() => {
+            const timer = setTimeout(() => {
                 return res.status(500)
                         .send({ ...response, error: "La stampante è connessa ma è impossibile accedere allo stato della stampante" });
-            }, 10000)
+            }, 10000);
 
             printer.getStatuses(async (statuses) => {
                 errors.push(...statuses.map((status) => status.toJSON().statuses.filter(s => s.status === "error").map(e => errorMapper(e))).flat())
@@ -88,11 +88,14 @@ app.post('/ticket/print', async (req, res) => {
 
                 await closeConnection(printer, networkDevice);
 
+                clearTimeout(timer);
+
                 return res.status(200)
                     .send(response);
             });
 
         } catch (e) {
+            console.error(e);
 
             return res.status(500)
                 .send({
