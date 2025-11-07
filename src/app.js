@@ -83,6 +83,8 @@ app.post('/ticket/print', async (req, res) => {
                   .feed()
                   .text(`Data: ${convertText(printTicketDTO.bookedSlot)}`)
                   .feed()
+                  .text(`Note: ${convertText(printTicketDTO.note ?? '')}`)
+                  .feed()
                   .text('------------------------------------------')
                   .feed();
 
@@ -211,6 +213,8 @@ app.post('/ticket/print-divided', async (req, res) => {
                         .text(`Indirizzo: ${convertText(printTicketDTO.address)}`)
                         .feed()
                         .text(`Data: ${convertText(printTicketDTO.bookedSlot)}`)
+                        .feed()
+                        .text(`Note: ${convertText(printTicketDTO.note ?? '')}`)
                         .feed()
                         .size(1, 1)
                         .text(convertText(category))
