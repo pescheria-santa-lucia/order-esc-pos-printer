@@ -77,14 +77,26 @@ app.post('/ticket/print', async (req, res) => {
                   .feed()
                   .size(0, 0)
                   .align('lt')
-                  .text(`Cliente: ${convertText(printTicketDTO.customer)}`)
+                  .text('Cliente:')
+                  .size(1, 1)
+                  .text(convertText(printTicketDTO.customer))
                   .feed()
-                  .text(`Indirizzo: ${convertText(printTicketDTO.address)}`)
+                  .size(0, 0)
+                  .text('Indirizzo:')
+                  .size(1, 1)
+                  .text(convertText(printTicketDTO.address))
                   .feed()
-                  .text(`Data: ${convertText(printTicketDTO.bookedSlot)}`)
+                  .size(0, 0)
+                  .text('Data:')
+                  .size(1, 1)
+                  .text(convertText(printTicketDTO.bookedSlot))
                   .feed()
-                  .text(`Note: ${convertText(printTicketDTO.note ?? '')}`)
+                  .size(0, 0)
+                  .text('Note:')
+                  .size(1, 1)
+                  .text(convertText(printTicketDTO.note ?? ''))
                   .feed()
+                  .size(0, 0)
                   .text('------------------------------------------')
                   .feed();
 
@@ -98,9 +110,9 @@ app.post('/ticket/print', async (req, res) => {
                     // Iterate over the products within each category
                     printTicketDTO.products[category].forEach(product => {
                         printer.flush()
-                          .size(1, 1)
+                          .size(2, 2)
                           .text(`- ${product.quantity}${product.unitMeasure} ${convertText(product.name)}`)
-                          .size(0, 0)
+                          .size(1, 1)
 
                         product.addons.forEach(addon => {
                             printer.text(`  + ${convertText(addon.name)}`);
@@ -198,7 +210,7 @@ app.post('/ticket/print-divided', async (req, res) => {
                   await printer
 
                   // Iterate over the categories (keys of the products object)
-                  Object.keys(printTicketDTO.products).forEach((category, index) => {
+                  Object.keys(printTicketDTO.products).forEach((category, _index) => {
                       // Print the category heading
                       printer.flush()
                         .font('a')
@@ -206,15 +218,26 @@ app.post('/ticket/print-divided', async (req, res) => {
                         .size(2, 2)
                         .text(`Ordine n.${convertText(printTicketDTO.id)}`)
                         .feed()
-                        .size(0, 0)
                         .align('lt')
-                        .text(`Cliente: ${convertText(printTicketDTO.customer)}`)
+                        .size(0, 0)
+                        .text('Cliente:')
+                        .size(1, 1)
+                        .text(convertText(printTicketDTO.customer))
                         .feed()
-                        .text(`Indirizzo: ${convertText(printTicketDTO.address)}`)
+                        .size(0, 0)
+                        .text('Indirizzo:')
+                        .size(1, 1)
+                        .text(convertText(printTicketDTO.address))
                         .feed()
-                        .text(`Data: ${convertText(printTicketDTO.bookedSlot)}`)
+                        .size(0, 0)
+                        .text('Data:')
+                        .size(1, 1)
+                        .text(convertText(printTicketDTO.bookedSlot))
                         .feed()
-                        .text(`Note: ${convertText(printTicketDTO.note ?? '')}`)
+                        .size(0, 0)
+                        .text('Note:')
+                        .size(1, 1)
+                        .text(convertText(printTicketDTO.note ?? ''))
                         .feed()
                         .size(1, 1)
                         .text(convertText(category))
@@ -225,9 +248,9 @@ app.post('/ticket/print-divided', async (req, res) => {
                       // Iterate over the products within each category
                       printTicketDTO.products[category].forEach(product => {
                           printer.flush()
-                            .size(1, 1)
+                            .size(2, 2)
                             .text(`- ${product.quantity}${product.unitMeasure} ${convertText(product.name)}`)
-                            .size(0, 0)
+                            .size(1, 1)
 
                           product.addons.forEach(addon => {
                               printer.text(`  + ${convertText(addon.name)}`);
@@ -238,6 +261,7 @@ app.post('/ticket/print-divided', async (req, res) => {
                       });
                       printer.flush()
                         .text('------------------------------------------')
+                        .size(1, 1)
                         .text("Segue: ")
                       categories.forEach(otherCategory => {
                           // Only print the category if it's not the current one
